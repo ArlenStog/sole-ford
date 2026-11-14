@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String?
+  role      String    @default("CUSTOMER") // CUSTOMER | ADMIN
+  createdAt DateTime  @default(now())
+  addresses Address[]
+  orders    Order[]
+  cartItems CartItem[]
+}
+
+model Address {
+  id         Int     @id @default(autoincrement())
+  userId     Int
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label      String  @default("Kućna adresa")
+  fullName   String
+  street     String
+  city       String
+  postalCode String
+  phone      String
+  isDefault  Boolean @default(false)
+}
+
+model CarModel {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  slug     String    @unique
+  years    String?
+  image    String?
+  sort     Int       @default(0)
+  products Product[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  slug        String      @unique
+  sku         String      @unique
+  partNumber  String?
+  description String
+  price       Int         // RSD
+  oldPrice    Int?        // za akcije
+  stock       Int         @default(1)
+  condition   String      @default("Polovno - ispravno")
+  image       String?
+  featured    Boolean     @default(false)
+  active      Boolean     @default(true)
+  carModelId  Int?
+  carModel    CarModel?   @relation(fields: [carModelId], references: [id], onDelete: SetNull)
+  categoryId  Int?
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int     @default(1)
+  @@unique([userId, productId])
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  number        String      @unique
+  userId        Int?
+  user          User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email         String
+  fullName      String
+  phone         String
+  street        String
+  city          String
+  postalCode    String
+  note          String?
+  delivery      String      // KURIR | LICNO
+  payment       String      // POUZECE | UPLATNICA | KARTICA_PRI_PREUZIMANJU
+  status        String      @default("NOVA") // NOVA | U_OBRADI | POSLATA | ISPORUCENA | OTKAZANA
+  subtotal      Int
+  shipping      Int
+  total         Int
+  createdAt     DateTime    @default(now())
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  sku       String
+  price     Int
+  quantity  Int
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}

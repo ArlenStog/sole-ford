@@ -1,0 +1,17 @@
+# Render Blueprint — besplatni demo hosting.
+# Disk je privremen: baza (SQLite) i slike se resetuju pri svakom pokretanju/deploy-u,
+# a seed ponovo ubacuje demo podatke.
+services:
+  - type: web
+    name: sole-ford
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:demo
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: JWT_SECRET
+        generateValue: true

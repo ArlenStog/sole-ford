@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+body { @apply bg-gray-50 text-gray-800 antialiased; overflow-x: clip; }
+/* Lepše prelamanje: naslovi ravnomerno, tekst bez "siročića" na kraju */
+h1, h2, h3, h4 { text-wrap: balance; }
+p, li, dd, label, figcaption { text-wrap: pretty; }
+a[href^="tel:"], a[href^="mailto:"] { white-space: nowrap; }
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-4; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 font-semibold transition disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-ford text-white hover:bg-ford-light; }
+  .btn-accent { @apply btn bg-accent text-ford-dark hover:bg-accent-dark; }
+  .btn-outline { @apply btn border border-ford text-ford hover:bg-ford hover:text-white; }
+  .btn-danger { @apply btn bg-red-600 text-white hover:bg-red-700; }
+  .btn-sm { @apply px-3 py-1.5 text-sm; }
+  .input { @apply w-full rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:border-ford focus:ring-2 focus:ring-ford/20; }
+  .label { @apply mb-1 block text-sm font-medium text-gray-700; }
+  .card { @apply rounded-lg border border-gray-200 bg-white shadow-sm; }
+  .h-section { @apply text-2xl font-bold text-ford-dark md:text-3xl; }
+  .badge { @apply inline-block rounded px-2 py-0.5 text-xs font-semibold; }
+  .prose-sf h2 { @apply mb-2 mt-6 text-xl font-bold text-ford-dark; }
+  .prose-sf p { @apply mb-3 leading-relaxed; }
+  .prose-sf ul { @apply mb-3 list-disc space-y-1 pl-6; }
+  .tbl { @apply w-full text-left text-sm; }
+  .tbl th { @apply border-b bg-gray-50 px-3 py-2 font-semibold text-gray-600; }
+  .tbl td { @apply border-b px-3 py-2 align-middle; }
+}
